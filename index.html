@@ -122,7 +122,6 @@
         html.dark .pink-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
 
         /* --- TIMELINE FLIP CARD CSS --- */
-        /* TRẠNG THÁI MẶC ĐỊNH CHƯA KÍCH HOẠT (MỜ) */
         .timeline-item::before {
             content: ''; position: absolute; top: 24px; left: -31px; width: 12px; height: 12px;
             background-color: var(--background-color); border-radius: 50%; border: 2px solid rgba(251, 113, 133, 0.3);
@@ -130,7 +129,6 @@
         }
         html.dark .timeline-item::before { border-color: rgba(129, 140, 248, 0.3); }
 
-        /* TRẠNG THÁI KHI SỢI CHỈ CHẠY ĐẾN (NHỊP ĐẬP + SÁNG) */
         .timeline-item.active::before {
             background-color: var(--primary-color); 
             border: 2px solid var(--background-color);
@@ -152,17 +150,16 @@
             .timeline-thread { left: -15px !important; top: 16px !important; }
         }
 
-        /* TRACK (Đường nền mờ) & THREAD (Sợi chỉ hồng) */
         .timeline-track {
             position: absolute; top: 24px; bottom: 0; left: -26px; width: 2px;
-            background-color: rgba(251, 113, 133, 0.15); /* Hồng nhạt */
+            background-color: rgba(251, 113, 133, 0.15);
         }
         html.dark .timeline-track { background-color: rgba(129, 140, 248, 0.15); }
 
         .timeline-thread {
             position: absolute; top: 24px; left: -26px; width: 2px;
             background: linear-gradient(to bottom, var(--gradient-start), var(--primary-color), var(--gradient-end));
-            height: 0%; /* Bắt đầu từ 0 */
+            height: 0%;
             z-index: 0;
             box-shadow: 0 0 8px var(--primary-color);
         }
@@ -211,7 +208,6 @@
             box-shadow: 0 10px 25px -5px var(--cursor-color);
         }
 
-        /* --- GALLERY REVEAL & HIDDEN MESSAGES --- */
         .reveal-wrapper { cursor: none; will-change: transform; transform-style: preserve-3d; }
         .gallery-img { cursor: none; will-change: transform, filter; transition: all 0.5s ease; width: 100%; height: 100%; object-fit: cover; }
         
@@ -239,7 +235,6 @@
             .gallery-caption p { font-size: 1.25rem !important; }
         }
 
-        /* --- BỨC TƯỜNG ĐIỀU ƯỚC --- */
         .wish-bubble {
             position: absolute;
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(4px);
@@ -263,7 +258,6 @@
             100% { bottom: 120%; opacity: 0; transform: translateX(0); }
         }
 
-        /* --- TRÁI TIM BAY LÊN CHO SECTION LỜI NHẮN --- */
         .message-floating-heart {
             position: absolute; bottom: -50px; color: var(--primary-color);
             animation: floatHeartUp linear forwards; opacity: 0; pointer-events: none; z-index: 0;
@@ -279,10 +273,19 @@
         .heart { color: var(--primary-color); animation: beat .5s infinite alternate; transform-origin: center; transition: color 0.5s ease; }
         @keyframes beat { to { transform: scale(1.4); } }
         
-        #lightbox { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(255,255,255,0.95); backdrop-filter: blur(10px); justify-content: center; align-items: center; }
+        /* Cập nhật CSS Lightbox & Ảnh để có thể zoom vuốt êm mượt */
+        #lightbox { 
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; 
+            background-color: rgba(255,255,255,0.95); backdrop-filter: blur(10px); 
+            justify-content: center; align-items: center; touch-action: none; overflow: hidden;
+        }
         html.dark #lightbox { background-color: rgba(0,0,0,0.9); }
         #lightbox.active { display: flex; animation: fadeIn 0.4s ease; }
-        #lightbox-img { max-width: 95vw; max-height: 85vh; border-radius: 12px; animation: zoomIn 0.4s ease; box-shadow: 0 15px 40px rgba(251, 113, 133, 0.4); object-fit: contain;}
+        
+        #lightbox-img { 
+            max-width: 95vw; max-height: 85vh; border-radius: 12px; box-shadow: 0 15px 40px rgba(251, 113, 133, 0.4); 
+            object-fit: contain; transform-origin: center; will-change: transform; touch-action: none;
+        }
         html.dark #lightbox-img { box-shadow: 0 0 30px var(--cursor-color); }
         
         .close-lightbox { position: absolute; top: 15px; right: 20px; color: #333; font-size: 35px; font-weight: bold; transition: 0.3s; cursor: none; z-index: 1001; }
@@ -291,7 +294,6 @@
         .close-lightbox:hover { color: var(--primary-color); transform: scale(1.2) rotate(90deg); }
         
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1;} }
 
         /* Cursor */
         .cursor { width: 30px; height: 30px; border: 2px solid var(--cursor-color); border-radius: 50%; position: fixed; left: 0; top: 0; pointer-events: none; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, border-color 0.5s; z-index: 99999; }
@@ -578,7 +580,10 @@
         </svg>
     </button>
 
-    <div id="lightbox"><span class="close-lightbox">&times;</span><img id="lightbox-img" src=""></div>
+    <div id="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img id="lightbox-img" src="">
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -755,7 +760,7 @@
                     if (typeof setupCanvas === 'function') setupCanvas();
                     ScrollTrigger.refresh();
                     initPageAnimations();
-                    initTimelineAnimations(); // Gọi hàm kích hoạt "Sợi chỉ hồng"
+                    initTimelineAnimations(); 
                 })
                 .to('#preloader', { opacity: 0, duration: 0.8 })
                 .add(() => {
@@ -782,14 +787,13 @@
                 );
             });
 
-            // Hiệu ứng riêng: Cuộn tới đâu hiện từng đoạn tin nhắn tới đó
             document.querySelectorAll('[data-anim="reveal-p"]').forEach((el) => {
                 gsap.fromTo(el, 
                     { opacity: 0, y: 20 }, 
                     {
                         scrollTrigger: { 
                             trigger: el, 
-                            start: 'top 90%', // Bắt đầu kích hoạt khi mép trên của dòng chữ tới 90% màn hình
+                            start: 'top 90%', 
                             toggleActions: 'play none none none' 
                         },
                         opacity: 1, y: 0, duration: 1, ease: 'power2.out'
@@ -830,46 +834,152 @@
             const timelineThread = document.getElementById('timeline-thread');
             
             if (timelineContainer && timelineThread) {
-                // Sợi chỉ chảy xuống theo thao tác cuộn
                 gsap.to(timelineThread, {
                     height: '100%',
                     ease: 'none',
                     scrollTrigger: {
                         trigger: timelineContainer,
-                        start: 'top 50%',   // Bắt đầu khi thẻ timeline chạm vào giữa màn hình
-                        end: 'bottom 50%',  // Hoàn tất 100% khi đáy của container chạm đến giữa màn hình
-                        scrub: 0.5,         // Bám sát theo scroll bar siêu mượt
+                        start: 'top 50%',   
+                        end: 'bottom 50%',  
+                        scrub: 0.5,         
                     }
                 });
 
-                // Từng điểm mốc sáng lên tạo nhịp đập khi sợi chỉ chạm tới
                 const timelineItems = gsap.utils.toArray('.timeline-item');
                 timelineItems.forEach((item) => {
                     ScrollTrigger.create({
                         trigger: item,
-                        start: 'top 50%', // Ngay khi điểm này lọt vào giữa màn hình (lúc sợi chỉ đi qua)
-                        toggleClass: 'active', // Thêm class .active để CSS xử lý animation đập tim
+                        start: 'top 50%',
+                        toggleClass: 'active',
                     });
                 });
             }
         }
         
+        // ==========================================
+        // 🌟 GALLERY LIGHTBOX VÀ PINCH-TO-ZOOM LOGIC
+        // ==========================================
         function initGalleryInteractive() {
             const lightbox = document.getElementById('lightbox'); 
             const lightboxImg = document.getElementById('lightbox-img');
             
+            // Zoom State Variables
+            let scale = 1;
+            let lastScale = 1;
+            let startX = 0, startY = 0;
+            let translateX = 0, translateY = 0;
+            let lastTranslateX = 0, lastTranslateY = 0;
+            let isDragging = false;
+            let initialPinchDistance = null;
+            let lastTap = 0;
+
+            // Reset Zoom
+            function resetZoom() {
+                scale = 1; lastScale = 1;
+                translateX = 0; translateY = 0;
+                lastTranslateX = 0; lastTranslateY = 0;
+                lightboxImg.style.transition = 'transform 0.3s ease';
+                lightboxImg.style.transform = `translate(0px, 0px) scale(1)`;
+                setTimeout(() => { lightboxImg.style.transition = 'none'; }, 300);
+            }
+
+            // Open Lightbox
             document.querySelectorAll('.reveal-wrapper').forEach(wrapper => { 
                 wrapper.addEventListener('click', (e) => { 
                     e.stopPropagation(); 
                     playSwooshSound(); 
                     lightbox.classList.add('active'); 
-                    lightboxImg.src = wrapper.querySelector('.gallery-img').src; 
+                    lightboxImg.src = wrapper.querySelector('.gallery-img').src;
+                    resetZoom(); 
                 }); 
             });
             
-            function closeLightbox() { playSwooshSound(); lightbox.classList.remove('active'); }
+            // Close Lightbox Function
+            function closeLightbox() { 
+                playSwooshSound(); 
+                lightbox.classList.remove('active'); 
+                resetZoom();
+            }
+            
+            // Close Listeners
             document.querySelector('.close-lightbox').addEventListener('click', closeLightbox);
-            lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.classList.contains('close-lightbox')) closeLightbox(); });
+            
+            // Click to close (nhưng ngăn đóng nếu đang vuốt hoặc đang zoom)
+            lightbox.addEventListener('click', (e) => {
+                if (isDragging || scale > 1) return; // Nếu đang zoom hoặc vuốt kéo thì không đóng
+                if (e.target === lightbox || e.target.classList.contains('close-lightbox')) closeLightbox(); 
+            });
+
+            // Touch Events on Lightbox for Zooming/Panning
+            lightbox.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    // Start Pinch (2 ngón)
+                    initialPinchDistance = Math.hypot(
+                        e.touches[0].pageX - e.touches[1].pageX,
+                        e.touches[0].pageY - e.touches[1].pageY
+                    );
+                    lightboxImg.style.transition = 'none';
+                } else if (e.touches.length === 1 && scale > 1) {
+                    // Start Pan (1 ngón - Chỉ khi đã zoom)
+                    startX = e.touches[0].pageX - lastTranslateX;
+                    startY = e.touches[0].pageY - lastTranslateY;
+                    isDragging = true;
+                    lightboxImg.style.transition = 'none';
+                }
+            }, { passive: false });
+
+            lightbox.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2) {
+                    e.preventDefault(); // Ngăn trình duyệt cuộn trang
+                    const currentDistance = Math.hypot(
+                        e.touches[0].pageX - e.touches[1].pageX,
+                        e.touches[0].pageY - e.touches[1].pageY
+                    );
+                    scale = Math.max(1, Math.min(lastScale * (currentDistance / initialPinchDistance), 5)); // Zoom giới hạn 1x đến 5x
+                    lightboxImg.style.transform = `translate(${lastTranslateX}px, ${lastTranslateY}px) scale(${scale})`;
+                } else if (e.touches.length === 1 && isDragging && scale > 1) {
+                    e.preventDefault();
+                    translateX = e.touches[0].pageX - startX;
+                    translateY = e.touches[0].pageY - startY;
+                    lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+                }
+            }, { passive: false });
+
+            lightbox.addEventListener('touchend', (e) => {
+                if (e.touches.length === 0) {
+                    lastScale = scale;
+                    lastTranslateX = scale > 1 ? translateX : 0;
+                    lastTranslateY = scale > 1 ? translateY : 0;
+                    isDragging = false;
+                    
+                    if (scale < 1) resetZoom();
+                }
+
+                // Chạm đúp (Double tap) để Zoom
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                if (tapLength < 300 && tapLength > 0 && e.touches.length === 0) {
+                    e.preventDefault();
+                    if (scale > 1) {
+                        resetZoom(); // Đang to thì thu nhỏ về gốc
+                    } else {
+                        scale = 2.5; lastScale = scale; // Phóng to 2.5 lần
+                        lightboxImg.style.transition = 'transform 0.3s ease';
+                        lightboxImg.style.transform = `translate(0px, 0px) scale(${scale})`;
+                        setTimeout(() => { lightboxImg.style.transition = 'none'; }, 300);
+                    }
+                }
+                lastTap = currentTime;
+            });
+
+            // Lăn chuột trên máy tính để zoom
+            lightbox.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                scale += e.deltaY * -0.005;
+                scale = Math.min(Math.max(1, scale), 5); // Constrain 1x to 5x
+                lastScale = scale;
+                lightboxImg.style.transform = `translate(${lastTranslateX}px, ${lastTranslateY}px) scale(${scale})`;
+            }, { passive: false });
         }
         
         // --- BỨC TƯỜNG ĐIỀU ƯỚC ---
@@ -962,14 +1072,13 @@
         function processWishSubmit() {
             if (!pendingWish) return;
 
-        // Tạo ngay một bong bóng mới bay cực nhanh
-    const newBubble = document.createElement('div');
-    newBubble.classList.add('wish-bubble');
-    newBubble.innerHTML = `🚀 ${pendingWish}`;
-    newBubble.style.left = `50%`;
-    newBubble.style.transform = 'translateX(-50%)';
-    newBubble.style.animation = `floatUpSway 3s linear forwards`; // Bay chỉ trong 4 giây
-    wishSky.appendChild(newBubble);    
+        const newBubble = document.createElement('div');
+        newBubble.classList.add('wish-bubble');
+        newBubble.innerHTML = `🚀 ${pendingWish}`;
+        newBubble.style.left = `50%`;
+        newBubble.style.transform = 'translateX(-50%)';
+        newBubble.style.animation = `floatUpSway 3s linear forwards`; 
+        wishSky.appendChild(newBubble);    
 
             const urlencoded = new URLSearchParams();
             urlencoded.append('wish', pendingWish); 
