@@ -1093,7 +1093,7 @@
             .then(() => {
                 console.log('Đã gửi điều ước và IP lên Sheets thành công!');
                 const oldPlaceholder = wishInput.placeholder;
-                wishInput.placeholder = "Đã gửi thành công! Chờ anh duyệt nhé ❤️";
+                wishInput.placeholder = "Đã gửi thành công ❤️";
                 setTimeout(() => { wishInput.placeholder = oldPlaceholder; }, 4000);
             })
             .catch(error => console.error('Lỗi khi gửi dữ liệu lên Sheets:', error));
