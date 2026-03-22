@@ -122,31 +122,60 @@
         html.dark .pink-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
 
         /* --- TIMELINE FLIP CARD CSS --- */
+        /* TRẠNG THÁI MẶC ĐỊNH CHƯA KÍCH HOẠT (MỜ) */
         .timeline-item::before {
             content: ''; position: absolute; top: 24px; left: -31px; width: 12px; height: 12px;
-            background-color: var(--primary-color); border-radius: 50%; border: 2px solid var(--background-color);
-            z-index: 1; box-shadow: 0 0 15px var(--primary-color); transition: all 0.5s ease;
+            background-color: var(--background-color); border-radius: 50%; border: 2px solid rgba(251, 113, 133, 0.3);
+            z-index: 1; transition: all 0.5s ease;
         }
-        
-        /* Loại bỏ hiệu ứng dính hover trên điện thoại */
-        @media (hover: hover) {
-            .timeline-item:hover::before { transform: scale(1.5); }
+        html.dark .timeline-item::before { border-color: rgba(129, 140, 248, 0.3); }
+
+        /* TRẠNG THÁI KHI SỢI CHỈ CHẠY ĐẾN (NHỊP ĐẬP + SÁNG) */
+        .timeline-item.active::before {
+            background-color: var(--primary-color); 
+            border: 2px solid var(--background-color);
+            box-shadow: 0 0 15px var(--primary-color), 0 0 30px var(--primary-color);
+            animation: timelineHeartbeat 1.2s infinite ease-in-out;
         }
-        .timeline-item.flipped::before { transform: scale(1.5); }
+
+        @keyframes timelineHeartbeat {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--primary-color); }
+            15% { transform: scale(1.4); box-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color); }
+            30% { transform: scale(1); box-shadow: 0 0 10px var(--primary-color); }
+            45% { transform: scale(1.4); box-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color); }
+            100% { transform: scale(1); box-shadow: 0 0 10px var(--primary-color); }
+        }
         
         @media (max-width: 768px) {
             .timeline-item::before { left: -20px; top: 16px; width: 10px; height: 10px; }
-            .timeline-container::before { left: -15px !important; }
+            .timeline-track { left: -15px !important; top: 16px !important; }
+            .timeline-thread { left: -15px !important; top: 16px !important; }
+        }
+
+        /* TRACK (Đường nền mờ) & THREAD (Sợi chỉ hồng) */
+        .timeline-track {
+            position: absolute; top: 24px; bottom: 0; left: -26px; width: 2px;
+            background-color: rgba(251, 113, 133, 0.15); /* Hồng nhạt */
+        }
+        html.dark .timeline-track { background-color: rgba(129, 140, 248, 0.15); }
+
+        .timeline-thread {
+            position: absolute; top: 24px; left: -26px; width: 2px;
+            background: linear-gradient(to bottom, var(--gradient-start), var(--primary-color), var(--gradient-end));
+            height: 0%; /* Bắt đầu từ 0 */
+            z-index: 0;
+            box-shadow: 0 0 8px var(--primary-color);
         }
         
-        .timeline-container::before {
-            content: ''; position: absolute; top: 24px; left: -26px; bottom: 0; width: 2px;
-            background-image: linear-gradient(to bottom, var(--primary-color), rgba(255, 255, 255, 0));
+        .timeline-thread-icon {
+            position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            color: var(--primary-color); font-size: 16px;
+            filter: drop-shadow(0 0 5px var(--primary-color));
+            z-index: 10;
         }
         
         .flip-card { background-color: transparent; width: 100%; perspective: 1000px; cursor: none; }
         
-        /* Sử dụng CSS Grid để nội dung 2 mặt tự ép card dãn ra cho vừa khít nội dung */
         .flip-card-inner { 
             display: grid; 
             width: 100%; 
@@ -155,7 +184,6 @@
             transform-style: preserve-3d; 
         }
         
-        /* Hỗ trợ lật thẻ: hover cho máy tính và class .flipped cho điện thoại cảm ứng */
         @media (hover: hover) {
             .timeline-item:hover .flip-card-inner { transform: rotateY(180deg); }
         }
@@ -192,15 +220,13 @@
             transition: opacity 0.5s ease, transform 0.5s ease; transform: translate(-50%, -40%); z-index: 20; pointer-events: none;
         }
 
-        /* Hover trên Desktop */
         @media (hover: hover) {
             .reveal-wrapper:hover .gallery-img { filter: brightness(0.4) !important; transform: scale(1.1); }
             .reveal-wrapper:hover .gallery-caption { opacity: 1; transform: translate(-50%, -50%); }
         }
 
-        /* Fix hiển thị trên màn hình cảm ứng (Mobile/Tablet) */
         @media (hover: none) {
-            .gallery-img { filter: brightness(0.7); } /* Tối nền sẵn 1 chút */
+            .gallery-img { filter: brightness(0.7); }
             .gallery-caption {
                 opacity: 1; 
                 transform: translate(-50%, 0);
@@ -221,14 +247,12 @@
             box-shadow: 0 8px 20px rgba(251, 113, 133, 0.2);
             color: var(--primary-color);
             font-weight: 600; font-size: 0.9rem; white-space: nowrap;
-            /* Thêm animation floatUpSway để bóng lượn qua lượn lại */
             animation: floatUpSway linear infinite; 
             display: flex; align-items: center; gap: 8px; pointer-events: none; z-index: 10;
         }
         @media (min-width: 768px) { .wish-bubble { font-size: 1.1rem; padding: 12px 24px; } }
         html.dark .wish-bubble { background: rgba(30, 41, 59, 0.85); box-shadow: 0 4px 15px var(--cursor-color); border: 1px solid var(--cursor-color);}
         
-        /* Hiệu ứng bay lên kèm lắc nhẹ sang 2 bên và mờ dần ở 2 đầu để không bị cắt xén cứng */
         @keyframes floatUpSway {
             0% { bottom: -100px; opacity: 0; transform: translateX(0); }
             5% { opacity: 1; }
@@ -275,7 +299,6 @@
         html.dark .cursor.hover { mix-blend-mode: screen; }
         .cursor-dot { width: 6px; height: 6px; background-color: var(--primary-color); border-radius: 50%; position: fixed; left: 0; top: 0; pointer-events: none; transform: translate(-50%, -50%); z-index: 99999; transition: background-color 0.5s; }
         
-        /* Disable Cursor on Touch Devices */
         @media (hover: none) and (pointer: coarse) {
             .cursor, .cursor-dot { display: none !important; }
             body, .flip-card, .reveal-wrapper, a, button, input { cursor: auto !important; }
@@ -387,11 +410,18 @@
         </section>
 
         <!-- Timeline 3D Flip Card -->
-        <section class="bg-gradient-to-b from-rose-50/50 to-white dark:from-slate-900 dark:to-slate-900 py-12 sm:py-16 md:py-24 px-4 sm:px-6 transition-colors duration-500">
+        <section class="bg-gradient-to-b from-rose-50/50 to-white dark:from-slate-900 dark:to-slate-900 py-12 sm:py-16 md:py-24 px-4 sm:px-6 transition-colors duration-500 overflow-hidden">
             <div class="container mx-auto max-w-4xl">
                 <h2 class="font-cursive text-4xl sm:text-5xl md:text-7xl text-rose-500 dark:text-indigo-400 text-center mb-10 md:mb-16 gradient-text leading-tight" data-anim="reveal">Hành Trình Tình Yêu</h2>
                 <div class="relative timeline-container ml-5 sm:ml-6 md:ml-0">
                     
+                    <!-- Đường nền mờ và Sợi chỉ hồng -->
+                    <div class="timeline-track"></div>
+                    <div id="timeline-thread" class="timeline-thread">
+                        <!-- Trái tim dẫn đường ở cuối sợi chỉ -->
+                        <div class="timeline-thread-icon">❤</div>
+                    </div>
+
                     <!-- Card 1 -->
                     <div class="timeline-item relative pl-6 sm:pl-8 md:pl-12 pb-8 md:pb-12" data-anim="reveal" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card">
@@ -404,7 +434,7 @@
                                     </p>
                                 </div>
                                 <div class="flip-card-back bg-rose-50 dark:bg-slate-700 border-rose-200 dark:border-slate-600">
-                                    <img src="ff.webp" loading="lazy" class="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full object-cover mb-2 md:mb-4 border-2 border-white dark:border-slate-500 shadow-md shrink-0" alt="Cà phê">
+                                    <img src="ff.webp" loading="lazy" class="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full object-cover mb-2 md:mb-4 border-2 border-white dark:border-slate-500 shadow-md shrink-0" alt="">
                                     <p class="text-stone-700 dark:text-gray-300 leading-relaxed font-medium text-[13px] sm:text-sm md:text-base pb-2">Định mệnh cho chúng ta chạm mặt nhau tại chiến trường khốc liệt nơi súng đạn không có mắt sơ hở là bỏ lỡ nhau. Chỉ một ánh nhìn, anh biết câu chuyện tình yêu của đời mình đã bắt đầu 😎 hihi.</p>
                                 </div>
                             </div>
@@ -424,7 +454,7 @@
                                 </div>
                                 <div class="flip-card-back bg-rose-50 dark:bg-slate-700 border-rose-200 dark:border-slate-600">
                                     <div class="text-rose-500 dark:text-indigo-400 mb-2 md:mb-3 shrink-0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12"><path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-1.383-.597 15.25 15.25 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.11-4.789 9.25a15.32 15.32 0 0 1-4.244 3.17 15.247 15.247 0 0 1-1.383-.597l-.022.012-.007.004-.004.001a.752.752 0 0 1-.67 0l-.003-.001Z" /></svg></div>
-                                    <p class="text-stone-700 dark:text-gray-300 leading-relaxed font-medium text-[13px] sm:text-sm md:text-base pb-2">Buổi tối hôm đó, gió nhè nhẹ, Khi đang say xưa đắm đuối trò chuyện bên nhau, với bao ký ức vui vẻ tươi đẹp, anh thấy mình cần phải cưới em và ngỏ lời, thật may mắn em cũng đồng ý hehe. Thế giới +1 cặp đôi hạnh phúc =)) </p>
+                                    <p class="text-stone-700 dark:text-gray-300 leading-relaxed font-medium text-[13px] sm:text-sm md:text-base pb-2">Buổi tối hôm đó, gió nhè nhẹ, Khi đang say xưa đắm đuối trò chuyện bên nhau, với bao ký tự vui vẻ tươi đẹp, anh thấy mình cần phải cưới em và ngỏ lời, thật may mắn em cũng đồng ý hehe. Thế giới +1 cặp đôi hạnh phúc =)) </p>
                                 </div>
                             </div>
                         </div>
@@ -442,7 +472,7 @@
                                     </p>
                                 </div>
                                 <div class="flip-card-back bg-rose-50 dark:bg-slate-700 border-rose-200 dark:border-slate-600">
-                                    <img src="tl.png" loading="lazy" class="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full object-cover mb-2 md:mb-4 border-2 border-white dark:border-slate-500 shadow-md shrink-0" alt="Du lịch">
+                                    <img src="tl.png" loading="lazy" class="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full object-cover mb-2 md:mb-4 border-2 border-white dark:border-slate-500 shadow-md shrink-0" alt="">
                                     <p class="text-stone-700 dark:text-gray-300 leading-relaxed font-medium text-[13px] sm:text-sm md:text-base pb-2">Đây là phần chúng ta chắc chắn sẽ trải qua cùng nhau. Em hãy thật cố gắng thi đỗ được ngôi trường mong muốn, anh cũng học tập trên hn để 3 năm nữa khi em lên đại học ta sẽ vui chơi cùng nhau =)) cùng mong chờ nha bé yêu!</p>
                                 </div>
                             </div>
@@ -458,7 +488,6 @@
             <div class="container mx-auto max-w-7xl">
                 <h2 class="font-cursive text-4xl sm:text-5xl md:text-7xl text-rose-500 dark:text-indigo-400 text-center mb-10 md:mb-16 gradient-text leading-tight" data-anim="reveal">Khoảnh Khắc Đáng Nhớ</h2>
                 
-                <!-- Kết hợp: Điện thoại dùng Grid, Máy tính dùng CSS Masonry -->
                 <div id="dynamic-gallery-container" class="grid grid-cols-2 gap-3 sm:gap-4 md:block md:columns-4 md:gap-6 w-full">
                     <!-- Ảnh sẽ được thêm tự động vào đây -->
                 </div>
@@ -476,20 +505,20 @@
                 <div class="bg-white/80 dark:bg-slate-800/70 p-5 sm:p-8 md:p-14 rounded-3xl pink-shadow backdrop-blur-md border border-white dark:border-slate-700 transition-colors duration-500 text-justify" data-anim="reveal">
                      
                      <div class="text-[15px] sm:text-base md:text-xl italic leading-relaxed text-stone-700 dark:text-gray-300 space-y-3 sm:space-y-4">
-                        <p class="font-medium text-rose-600 dark:text-indigo-300">"Gửi em - người anh cưới =))</p>
+                        <p class="font-medium text-rose-600 dark:text-indigo-300" data-anim="reveal-p">"Gửi em - người anh cưới =))</p>
                         
-                        <p class="indent-4 sm:indent-6 md:indent-8">Trong tình yêu, chắc chắn không thể mãi chỉ có hạnh phúc, vì con người và xã hội luôn vận động. Mỗi ngày, mỗi khoảnh khắc, chúng ta lại tiếp nhận thêm những điều mới, từ đó có những nhận định và đánh giá mới có thể tích cực và cũng có thể tiêu cực nhưng nó chỉ mang tính chất nhất thời thôi, không được bồng bột. Nhất là khi chúng ta đang ở độ tuổi mà tâm sinh lý vẫn đang trong quá trình trưởng thành và phát triển mong cố gắng ạ.</p>
+                        <p class="indent-4 sm:indent-6 md:indent-8" data-anim="reveal-p">Trong tình yêu, chắc chắn không thể mãi chỉ có hạnh phúc, vì con người và xã hội luôn vận động. Mỗi ngày, mỗi khoảnh khắc, chúng ta lại tiếp nhận thêm những điều mới, từ đó có những nhận định và đánh giá mới có thể tích cực và cũng có thể tiêu cực nhưng nó chỉ mang tính chất nhất thời thôi, không được bồng bột. Nhất là khi chúng ta đang ở độ tuổi mà tâm sinh lý vẫn đang trong quá trình trưởng thành và phát triển mong cố gắng ạ.</p>
                         
-                        <p class="indent-4 sm:indent-6 md:indent-8">Đúng như em nói, yêu là phải tin tưởng và mỗi người phải tự có trách nhiệm với chính mình, với đối phương. Chúng ta cần thực sự nghĩ cho nhau, không để bất kỳ vấn đề gì có nguy cơ khiến mối quan hệ trở nên tồi tệ. Anh mong rằng dù có chuyện gì, em cũng sẽ luôn thẳng thắn chia sẻ, tâm sự với anh.</p>
+                        <p class="indent-4 sm:indent-6 md:indent-8" data-anim="reveal-p">Đúng như em nói, yêu là phải tin tưởng và mỗi người phải tự có trách nhiệm với chính mình, với đối phương. Chúng ta cần thực sự nghĩ cho nhau, không để bất kỳ vấn đề gì có nguy cơ khiến mối quan hệ trở nên tồi tệ. Anh mong rằng dù có chuyện gì, em cũng sẽ luôn thẳng thắn chia sẻ, tâm sự với anh.</p>
                         
-                        <p class="indent-4 sm:indent-6 md:indent-8">Anh sẽ đợi em lớn thêm. Còn trước mắt, anh muốn em hãy cứ yêu anh, yêu bất chấp và tin tưởng vào anh =)). Anh là người đi trước với những gì anh có, chỉ cần cùng nhau thay đổi cố gắng, hạnh phúc sẽ tới và chúng ta chắc chắn sẽ về chung một nhà, bên nhau trọn đời. Khi nào em lớn hơn nhiều quan sát hơn, trải nghiệm hơn thì chắc em sẽ hiểu cho anh thôi.</p>
+                        <p class="indent-4 sm:indent-6 md:indent-8" data-anim="reveal-p">Anh sẽ đợi em lớn thêm. Còn trước mắt, anh muốn em hãy cứ yêu anh, yêu bất chấp và tin tưởng vào anh =)). Anh là người đi trước với những gì anh có, chỉ cần cùng nhau thay đổi cố gắng, hạnh phúc sẽ tới và chúng ta chắc chắn sẽ về chung một nhà, bên nhau trọn đời. Khi nào em lớn hơn nhiều quan sát hơn, trải nghiệm hơn thì chắc em sẽ hiểu cho anh thôi.</p>
                         
-                        <p class="indent-4 sm:indent-6 md:indent-8">Tất nhiên đây là suy nghĩ hiện tại của anh theo thời gian có thể thay đổi nhưng sao cho tốt nhất thôi, anh sẽ cố gắng tạo cập nhập cái web này nên ta tạo nhiều kỷ niệm với nhau nhé.</p>
+                        <p class="indent-4 sm:indent-6 md:indent-8" data-anim="reveal-p">Tất nhiên đây là suy nghĩ hiện tại của anh theo thời gian có thể thay đổi nhưng sao cho tốt nhất thôi, anh sẽ cố gắng tạo cập nhập cái web này nên ta tạo nhiều kỷ niệm với nhau nhé.</p>
                         
-                        <p class="indent-4 sm:indent-6 md:indent-8 font-medium text-rose-600 dark:text-indigo-300">I love you so much!"</p>
+                        <p class="indent-4 sm:indent-6 md:indent-8 font-medium text-rose-600 dark:text-indigo-300" data-anim="reveal-p">I love you so much!"</p>
                      </div>
 
-                     <p class="font-cursive text-3xl sm:text-4xl md:text-5xl text-right mt-5 sm:mt-6 md:mt-8 text-rose-500 dark:text-indigo-400 font-bold drop-shadow-sm">- Tuân -</p>
+                     <p class="font-cursive text-3xl sm:text-4xl md:text-5xl text-right mt-5 sm:mt-6 md:mt-8 text-rose-500 dark:text-indigo-400 font-bold drop-shadow-sm" data-anim="reveal-p">- Tuân -</p>
                 </div>
             </div>
         </section>
@@ -557,23 +586,15 @@
     <script src="https://unpkg.com/lenis@1.1.2/dist/lenis.min.js"></script>
     
     <script>
-    // Ép trình duyệt cuộn lên đầu ngay lập tức khi vừa vào trang
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
     window.scrollTo(0, 0);
 
-    // =====================================================================
-    // 🛠️ CẤU HÌNH THƯ VIỆN ẢNH (GALLERY) SIÊU TỐC
-    // =====================================================================
     const GALLERY_SETTINGS = {
-        // CÁCH 1: NẾU BẠN CÓ NHIỀU ẢNH (DÙNG TÊN SỐ THỨ TỰ)
-        // Đổi tên ảnh thành 1.jpg, 2.jpg... rồi bỏ vào thư mục img/
-        folderPath: 'img/',   // Thư mục chứa ảnh
-        extension: '.jpg',    // Đuôi ảnh
-        totalImages: 0,       // ĐIỀN TỔNG SỐ ẢNH VÀO ĐÂY (Vd: 50). NẾU ĐIỀN 0, WEB SẼ DÙNG CÁCH 2 Ở DƯỚI.
-        
-        // CÁCH 2: NẾU totalImages = 0, WEB SẼ TỰ ĐỘNG DÙNG DANH SÁCH DƯỚI ĐÂY
+        folderPath: 'img/',
+        extension: '.jpg',
+        totalImages: 0,
         customImages: [
             { src: 'mess.jpg', caption: 'Tình Yêu của tôi 💖' },
             { src: 'str1.jpg', caption: 'Rất hạnh phúc 😊' },
@@ -642,7 +663,7 @@
         }
     });
 
-    // --- KHỞI TẠO WEB AUDIO API CHO SOUND EFFECTS (TIẾNG POP/SWOOSH) ---
+    // --- WEB AUDIO API CHO SOUND EFFECTS ---
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx;
     
@@ -698,9 +719,8 @@
     document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo(0, 0);
 
-        // Khởi tạo Lenis nhưng NGĂN KHÔNG CHO CUỘN LÚC ĐANG LOAD
         const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), lerp: 0.15, wheelMultiplier: 1.2, smoothWheel: true });
-        lenis.stop(); // Khóa cuộn màn hình
+        lenis.stop();
         
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
@@ -731,16 +751,16 @@
                 .to('#heart-merged', { scale: 1.15, duration: 0.2, yoyo: true, repeat: 1 }, '+=0.2')
                 .to('#heart-merged', { opacity: 0, scale: 0, duration: 0.8, ease: 'power2.in', delay: 0.5 })
                 .add(() => {
-                    // Xếp sẵn vị trí Animation ẨN Ở DƯỚI LỚP PRELOADER để ngăn Layout Shift (lỗi giật hình)
                     document.body.classList.remove('preloader-active');
                     if (typeof setupCanvas === 'function') setupCanvas();
                     ScrollTrigger.refresh();
                     initPageAnimations();
+                    initTimelineAnimations(); // Gọi hàm kích hoạt "Sợi chỉ hồng"
                 })
                 .to('#preloader', { opacity: 0, duration: 0.8 })
                 .add(() => {
                     preloader.style.display = 'none';
-                    lenis.start(); // MỞ KHÓA CUỘN SAU KHI PRELOADER BIẾN MẤT HOÀN TOÀN
+                    lenis.start(); 
                     initGalleryInteractive(); 
                 });
         });
@@ -753,12 +773,26 @@
               .to('p[data-anim="hero-date"]', { opacity: 1, duration: 1, ease: 'power3.out' }, '-=1');
 
             document.querySelectorAll('[data-anim="reveal"]').forEach(el => {
-                // Thay from thành fromTo để set cứng tọa độ nhảy vào ngay từ đầu
                 gsap.fromTo(el, 
                     { opacity: 0, y: 40 }, 
                     {
                         scrollTrigger: { trigger: el, start: 'top 85%', end: 'bottom 20%', toggleActions: 'play none none none' },
                         opacity: 1, y: 0, duration: 1.2, ease: 'power3.out'
+                    }
+                );
+            });
+
+            // Hiệu ứng riêng: Cuộn tới đâu hiện từng đoạn tin nhắn tới đó
+            document.querySelectorAll('[data-anim="reveal-p"]').forEach((el) => {
+                gsap.fromTo(el, 
+                    { opacity: 0, y: 20 }, 
+                    {
+                        scrollTrigger: { 
+                            trigger: el, 
+                            start: 'top 90%', // Bắt đầu kích hoạt khi mép trên của dòng chữ tới 90% màn hình
+                            toggleActions: 'play none none none' 
+                        },
+                        opacity: 1, y: 0, duration: 1, ease: 'power2.out'
                     }
                 );
             });
@@ -787,6 +821,38 @@
                 VanillaTilt.init(document.querySelectorAll(".tilt-elem"), { max: 10, speed: 400, glare: true, "max-glare": 0.3, scale: 1.02 });
             }
         }
+
+        // ==========================================
+        // 🌟 HIỆU ỨNG SỢI CHỈ HỒNG VÀ NHỊP ĐẬP
+        // ==========================================
+        function initTimelineAnimations() {
+            const timelineContainer = document.querySelector('.timeline-container');
+            const timelineThread = document.getElementById('timeline-thread');
+            
+            if (timelineContainer && timelineThread) {
+                // Sợi chỉ chảy xuống theo thao tác cuộn
+                gsap.to(timelineThread, {
+                    height: '100%',
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: timelineContainer,
+                        start: 'top 50%',   // Bắt đầu khi thẻ timeline chạm vào giữa màn hình
+                        end: 'bottom 50%',  // Hoàn tất 100% khi đáy của container chạm đến giữa màn hình
+                        scrub: 0.5,         // Bám sát theo scroll bar siêu mượt
+                    }
+                });
+
+                // Từng điểm mốc sáng lên tạo nhịp đập khi sợi chỉ chạm tới
+                const timelineItems = gsap.utils.toArray('.timeline-item');
+                timelineItems.forEach((item) => {
+                    ScrollTrigger.create({
+                        trigger: item,
+                        start: 'top 50%', // Ngay khi điểm này lọt vào giữa màn hình (lúc sợi chỉ đi qua)
+                        toggleClass: 'active', // Thêm class .active để CSS xử lý animation đập tim
+                    });
+                });
+            }
+        }
         
         function initGalleryInteractive() {
             const lightbox = document.getElementById('lightbox'); 
@@ -806,7 +872,7 @@
             lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.classList.contains('close-lightbox')) closeLightbox(); });
         }
         
-        // --- BỨC TƯỜNG ĐIỀU ƯỚC (TẢI TỪ GOOGLE SHEETS) ---
+        // --- BỨC TƯỜNG ĐIỀU ƯỚC ---
         const wishForm = document.getElementById('wish-form');
         const wishInput = document.getElementById('wish-input');
         const wishSky = document.getElementById('wish-sky');
@@ -837,7 +903,7 @@
             bubble.innerHTML = `<span class="text-lg sm:text-xl">${icon}</span> ${text}`;
             
             const leftPos = Math.random() * 80 + 10; 
-            const duration = Math.random() * 17 + 18; 
+            const duration = Math.random() * 12 + 16; 
             
             bubble.style.left = `${leftPos}%`;
             bubble.style.animationDuration = `${duration}s`;
@@ -896,6 +962,15 @@
         function processWishSubmit() {
             if (!pendingWish) return;
 
+        // Tạo ngay một bong bóng mới bay cực nhanh
+    const newBubble = document.createElement('div');
+    newBubble.classList.add('wish-bubble');
+    newBubble.innerHTML = `🚀 ${pendingWish}`;
+    newBubble.style.left = `50%`;
+    newBubble.style.transform = 'translateX(-50%)';
+    newBubble.style.animation = `floatUpSway 3s linear forwards`; // Bay chỉ trong 4 giây
+    wishSky.appendChild(newBubble);    
+
             const urlencoded = new URLSearchParams();
             urlencoded.append('wish', pendingWish); 
             urlencoded.append('ip', userIP); 
@@ -953,7 +1028,7 @@
             }
         }
 
-        // --- SECTION LỜI NHẮN: HIỆU ỨNG TRÁI TIM BAY LÊN ---
+        // --- SECTION LỜI NHẮN ---
         const messageSection = document.getElementById('message-section');
         const messageHeartsContainer = document.getElementById('message-hearts-container');
         let messageHeartInterval;
@@ -1082,7 +1157,6 @@
         const playlist = ['t.mp3', 't2.mp3']; 
         let currentTrackIndex = -1; 
 
-        // Hàm chọn bài ngẫu nhiên KHÔNG TRÙNG với bài đang phát
         function getRandomTrack() {
             if (playlist.length <= 1) return 0;
             let newIndex;
@@ -1100,7 +1174,6 @@
                 if (currentTrackIndex === -1) {
                     currentTrackIndex = getRandomTrack();
                     audio.src = playlist[currentTrackIndex];
-                    console.log("▶️ Đang phát nhạc bài: " + playlist[currentTrackIndex]); // In ra console để theo dõi
                 }
 
                 audio.volume = 1; 
@@ -1126,12 +1199,10 @@
         });
 
         audio.addEventListener('ended', () => { 
-            currentTrackIndex = getRandomTrack(); // Luôn chuyển sang bài khác khi hết bài
+            currentTrackIndex = getRandomTrack(); 
             audio.src = playlist[currentTrackIndex];
-            console.log("⏭️ Chuyển sang bài: " + playlist[currentTrackIndex]); // In ra console
             
             audio.play().catch(err => {
-                console.error("Lỗi tự động chuyển bài:", err);
                 playIcon.classList.remove('hidden'); 
                 pauseIcon.classList.add('hidden'); 
                 window.isPlaying = false; 
@@ -1152,7 +1223,7 @@
         }
         setInterval(createFallingHeart, 800);
 
-        // --- COUNTDOWN & LIGHTBOX ---
+        // --- COUNTDOWN ---
         const anniversaryDateStr = document.getElementById('anniversary-date').textContent;
         const anniversaryDate = new Date(anniversaryDateStr.split('.').reverse().join('-'));
         const daysEl = document.getElementById('days'); const hoursEl = document.getElementById('hours');
